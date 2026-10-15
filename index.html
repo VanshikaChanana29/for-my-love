@@ -10,6 +10,7 @@
     --rose: #e84a73;
     --pink: #ff6f91;
     --soft: #ffe0ea;
+    --cream: #fffaf6;
     --lav: #a07bff;
     --text: #5a3d4a;
   }
@@ -34,64 +35,126 @@
   .card {
     position: relative; z-index: 1;
     width: 100%; max-width: 440px;
-    background: rgba(255,255,255,.88);
+    background: rgba(255,255,255,.9);
     border: 2px solid var(--soft);
     border-radius: 28px;
-    padding: 36px 24px;
+    padding: 26px 22px 30px;
     text-align: center;
     box-shadow: 0 20px 50px rgba(232,74,115,.18);
   }
+
+  /* level progress */
+  .steps { display: flex; justify-content: center; gap: 8px; margin-bottom: 18px; }
+  .steps span {
+    width: 34px; height: 34px; border-radius: 50%;
+    display: grid; place-items: center; font-size: 1rem;
+    background: var(--cream); border: 2px solid var(--soft);
+    filter: grayscale(1); opacity: .5; transition: all .3s;
+  }
+  .steps span.on { filter: none; opacity: 1; border-color: var(--pink); transform: scale(1.1); }
+
   .screen { display: none; }
   .screen.active { display: block; animation: pop .5s ease; }
   @keyframes pop { from { opacity: 0; transform: scale(.9) translateY(12px); } }
 
-  h1 { font-family: 'Pacifico', cursive; font-weight: 400; color: var(--rose); font-size: 2rem; margin: 6px 0 12px; }
-  p { line-height: 1.6; font-size: 1.05rem; }
-  .sub { opacity: .85; margin-bottom: 22px; min-height: 3.2em; }
+  .level { display: inline-block; font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--lav); margin-bottom: 4px; }
+  h1 { font-family: 'Pacifico', cursive; font-weight: 400; color: var(--rose); font-size: 1.9rem; margin: 4px 0 10px; text-wrap: balance; }
+  p { line-height: 1.6; font-size: 1.02rem; }
+  .sub { opacity: .85; margin-bottom: 20px; }
+  #type { min-height: 5em; }
 
-  .face { font-size: 4.2rem; display: inline-block; }
+  .face { font-size: 4rem; display: inline-block; }
   .sad   { animation: sway 2.2s ease-in-out infinite; }
   .happy { animation: bounce 1s ease-in-out infinite; }
   @keyframes sway { 0%,100% { transform: rotate(-8deg); } 50% { transform: rotate(8deg); } }
   @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
 
-  .btns { display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; min-height: 70px; }
+  .btns { display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; min-height: 64px; }
   .btn {
     font-family: inherit; font-weight: 700; font-size: 1rem;
     border: none; border-radius: 999px; cursor: pointer;
-    padding: 13px 28px;
-    color: #fff;
+    padding: 13px 26px; color: #fff;
     background: linear-gradient(135deg, var(--pink), var(--rose));
     box-shadow: 0 8px 18px rgba(232,74,115,.3);
     transition: transform .2s;
   }
   .btn:hover { transform: scale(1.06); }
+  .btn:focus-visible, .opt:focus-visible, .day:focus-visible { outline: 3px solid var(--lav); outline-offset: 3px; }
   .btn.no {
     background: #fff; color: var(--rose); border: 2px solid var(--soft); box-shadow: none;
     transition: left .25s ease, top .25s ease, transform .2s;
   }
   .btn.no.running { position: fixed; z-index: 10; }
 
-  .days { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 22px; }
+  /* level 1: heart game */
+  .meter { height: 16px; border-radius: 999px; background: var(--soft); overflow: hidden; margin-bottom: 6px; }
+  .fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--pink), var(--rose)); border-radius: 999px; transition: width .25s ease; }
+  .meter-label { font-size: .85rem; font-weight: 700; margin-bottom: 12px; }
+  .arena {
+    position: relative; height: 300px; overflow: hidden;
+    border-radius: 20px; border: 2px dashed #ffc2d1;
+    background: linear-gradient(180deg, #fff7fa, #f7f0ff);
+    touch-action: none; user-select: none; -webkit-user-select: none;
+    margin-bottom: 16px;
+  }
+  .arena.shake { animation: shake .35s; }
+  @keyframes shake { 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+  .item { position: absolute; left: 0; top: 0; font-size: 2.2rem; cursor: pointer; line-height: 1; padding: 4px; will-change: transform; }
+  .plus { position: absolute; font-weight: 700; color: var(--rose); pointer-events: none; animation: rise .7s ease forwards; }
+  .plus.minus { color: #8a6d7a; }
+  @keyframes rise { to { transform: translateY(-40px); opacity: 0; } }
+  .arena-msg { position: absolute; inset: 0; display: grid; place-items: center; padding: 20px; font-weight: 700; }
+
+  /* level 2: quiz */
+  .q { font-size: 1.2rem; font-weight: 700; margin: 6px 0 16px; min-height: 3em; text-wrap: balance; }
+  .opts { display: grid; gap: 10px; margin-bottom: 12px; }
+  .opt {
+    font-family: inherit; font-size: 1rem; font-weight: 700; color: var(--text);
+    border: 2px solid var(--soft); background: var(--cream); border-radius: 16px;
+    padding: 13px; cursor: pointer; transition: transform .15s, border-color .15s, background .15s;
+  }
+  .opt:hover { transform: translateY(-2px); border-color: var(--pink); }
+  .opt.right { background: #e9fbef; border-color: #6bcf8e; }
+  .opt.wrong { animation: shake .35s; border-color: #c9b2bc; }
+  .feedback { min-height: 1.6em; font-weight: 700; color: var(--rose); }
+  .qcount { font-size: .85rem; opacity: .7; margin-top: 6px; }
+
+  /* days */
+  .days { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
   .day {
     font-family: inherit; color: var(--text);
-    border: 2px solid var(--soft); background: #fffaf6; border-radius: 18px;
+    border: 2px solid var(--soft); background: var(--cream); border-radius: 18px;
     padding: 14px 8px; cursor: pointer; transition: transform .15s, border-color .15s;
-    opacity: 0; animation: dayIn .4s ease forwards;
+    animation: dayIn .4s ease backwards;
   }
-  @keyframes dayIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  @keyframes dayIn { from { opacity: 0; transform: translateY(12px); } }
   .day b { display: block; font-size: 1.05rem; }
   .day small { opacity: .7; }
   .day:hover { transform: translateY(-3px); border-color: var(--pink); }
   .day.sel { border-color: var(--rose); background: #fff0f5; transform: scale(1.05); }
+  .days.shake { animation: shake .35s; }
 
-  .note { background: #fff7fa; border: 2px dashed #ffc2d1; border-radius: 20px; padding: 18px; font-weight: 700; margin-top: 18px; }
+  /* scratch ticket */
+  .ticket {
+    position: relative; border-radius: 20px; overflow: hidden;
+    border: 2px solid var(--pink); margin: 6px 0 16px;
+    touch-action: none; user-select: none; -webkit-user-select: none;
+  }
+  .ticket-inner { padding: 24px 18px; background: repeating-linear-gradient(45deg, #fff7fa 0 12px, #fff0f5 12px 24px); }
+  .ticket-inner .label { font-size: .78rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--lav); }
+  .ticket-inner .when { font-family: 'Pacifico', cursive; color: var(--rose); font-size: 1.6rem; margin: 6px 0; }
+  .ticket-inner ul { list-style: none; display: grid; gap: 4px; margin-top: 10px; font-weight: 700; }
+  #scratch { position: absolute; inset: 0; width: 100%; height: 100%; cursor: grab; }
+  .note { background: #fff7fa; border: 2px dashed #ffc2d1; border-radius: 20px; padding: 16px; font-weight: 700; }
+  #after { display: none; }
+  #after.show { display: block; animation: pop .5s ease; }
 
   .confetti { position: fixed; top: -30px; z-index: 20; pointer-events: none; font-size: 22px; animation: fall linear forwards; }
   @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
 
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    .hearts, .confetti { display: none; }
+    .sad, .happy { animation: none; }
   }
 </style>
 </head>
@@ -99,19 +162,46 @@
 <div class="hearts" id="hearts"></div>
 
 <main class="card">
+  <div class="steps" id="steps" aria-hidden="true">
+    <span>💌</span><span>🎮</span><span>🧠</span><span>🌹</span><span>🎟️</span>
+  </div>
 
-  <!-- 1. Sorry -->
+  <!-- 0. Sorry -->
   <section class="screen active" id="s-sorry">
     <div class="face sad">🥺</div>
     <h1>I'm sorry</h1>
     <p class="sub" id="type"></p>
+    <p class="sub"><b>But you can't forgive me that easily.</b> You have to win this little game first 😌</p>
     <div class="btns">
-      <button class="btn" onclick="go('s-date')">Okay, I forgive you 🤍</button>
+      <button class="btn" onclick="go('s-game')">Start the game 🎮</button>
     </div>
   </section>
 
-  <!-- 2. Date ask -->
+  <!-- 1. Heart game -->
+  <section class="screen" id="s-game">
+    <span class="level">Level 1 of 3</span>
+    <h1>Fill my forgiveness meter</h1>
+    <p class="sub">Tap the hearts 💖. Don't tap the grumpy faces 😤, they take points away!</p>
+    <div class="meter"><div class="fill" id="fill"></div></div>
+    <div class="meter-label" id="meter-label">0% forgiven</div>
+    <div class="arena" id="arena">
+      <div class="arena-msg" id="arena-msg"><button class="btn" onclick="startGame()">Ready? Go! 💗</button></div>
+    </div>
+  </section>
+
+  <!-- 2. Quiz -->
+  <section class="screen" id="s-quiz">
+    <span class="level">Level 2 of 3</span>
+    <h1>The Us Quiz</h1>
+    <p class="q" id="q"></p>
+    <div class="opts" id="opts"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="qcount" id="qcount"></div>
+  </section>
+
+  <!-- 3. Date ask -->
   <section class="screen" id="s-date">
+    <span class="level">Level 3 of 3 · Final boss</span>
     <div class="face sad">🐻💐</div>
     <h1>Date pe chaloge?</h1>
     <p class="sub">Let me make it up to you. Just you and me 🥹</p>
@@ -121,45 +211,195 @@
     </div>
   </section>
 
-  <!-- 3. Pick a day -->
+  <!-- 4. Pick a day -->
   <section class="screen" id="s-day">
     <div class="face happy">🥰</div>
-    <h1>Yayyy!</h1>
-    <p class="sub">Which day works for you?</p>
+    <h1>You won!</h1>
+    <p class="sub">Your prize is a date with me. Which day works for you?</p>
     <div class="days" id="days"></div>
-    <button class="btn" onclick="confirmDay()">It's a date 💌</button>
+    <button class="btn" onclick="confirmDay()">Claim my prize 🎁</button>
   </section>
 
-  <!-- 4. Done -->
-  <section class="screen" id="s-done">
-    <div class="face happy">💞</div>
-    <h1>It's a date!</h1>
-    <p id="done-text"></p>
-    <div class="note">Can't wait to see you. Screenshot this and send it to me 😌</div>
+  <!-- 5. Scratch ticket -->
+  <section class="screen" id="s-ticket">
+    <h1>Scratch your ticket</h1>
+    <p class="sub">Rub the card with your finger or mouse ✨</p>
+    <div class="ticket" id="ticket">
+      <div class="ticket-inner">
+        <div class="label">Admit one · Valid for you only</div>
+        <div class="when" id="when"></div>
+        <div>A date with me 💞</div>
+        <ul>
+          <li>🤗 Unlimited hugs</li>
+          <li>🍿 You pick the food</li>
+          <li>🙊 I won't argue for one full day</li>
+        </ul>
+      </div>
+      <canvas id="scratch"></canvas>
+    </div>
+    <div id="after">
+      <div class="note">It's a date! Screenshot this ticket and send it to me 😌💌</div>
+      <div class="btns" style="margin-top:14px;">
+        <button class="btn no" style="position:static" onclick="location.reload()">Play again 🔁</button>
+      </div>
+    </div>
   </section>
-
 </main>
 
 <script>
+  const ORDER = ["s-sorry", "s-game", "s-quiz", "s-date", "s-ticket"];
   function go(id) {
     document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
     document.getElementById(id).classList.add("active");
+    const step = id === "s-day" ? 3 : ORDER.indexOf(id);
+    document.querySelectorAll("#steps span").forEach((s, i) => s.classList.toggle("on", i <= step));
     resetNo();
+    if (id === "s-quiz") renderQ();
     if (id === "s-day") renderDays();
+    if (id === "s-ticket") setupScratch();
   }
+  go("s-sorry");
 
   // typewriter sorry message
   const msg = "I know I messed up, and I hate that I upset you. You mean the world to me. Please don't stay mad for long? 🫶🏻";
   let t = 0;
   (function type() {
     document.getElementById("type").textContent = msg.slice(0, t++);
-    if (t <= msg.length) setTimeout(type, 40);
+    if (t <= msg.length) setTimeout(type, 35);
   })();
 
-  // the "No" button that runs away
+  /* ---------- Level 1: tap the hearts ---------- */
+  const arena = document.getElementById("arena");
+  let score = 0, playing = false, items = [], lastSpawn = 0, lastTime = 0;
+
+  function startGame() {
+    score = 0; updateMeter();
+    document.getElementById("arena-msg").remove();
+    playing = true; lastTime = performance.now();
+    requestAnimationFrame(loop);
+  }
+
+  function spawn() {
+    const grumpy = Math.random() < 0.25;
+    const el = document.createElement("span");
+    el.className = "item";
+    el.textContent = grumpy ? "😤" : ["❤️", "💖", "💗", "💘"][Math.floor(Math.random() * 4)];
+    arena.appendChild(el);
+    items.push({
+      el, grumpy,
+      x: Math.random() * (arena.clientWidth - 48),
+      y: arena.clientHeight,
+      v: 90 + Math.random() * 80 + score * 0.8,
+      wob: Math.random() * 6
+    });
+  }
+
+  function loop(now) {
+    if (!playing) return;
+    const dt = (now - lastTime) / 1000; lastTime = now;
+    if (now - lastSpawn > 550) { spawn(); lastSpawn = now; }
+    items = items.filter(it => {
+      it.y -= it.v * dt;
+      const dx = Math.sin(now / 400 + it.wob) * 10;
+      it.el.style.transform = `translate(${it.x + dx}px, ${it.y}px)`;
+      if (it.y < -60) { it.el.remove(); return false; }
+      return true;
+    });
+    requestAnimationFrame(loop);
+  }
+
+  arena.addEventListener("pointerdown", e => {
+    const el = e.target.closest(".item");
+    if (!el || !playing) return;
+    const it = items.find(i => i.el === el);
+    const r = arena.getBoundingClientRect();
+    const plus = document.createElement("span");
+    plus.className = "plus" + (it.grumpy ? " minus" : "");
+    plus.textContent = it.grumpy ? "-15 😤" : "+10 💗";
+    plus.style.left = e.clientX - r.left - 20 + "px";
+    plus.style.top = e.clientY - r.top - 20 + "px";
+    arena.appendChild(plus);
+    setTimeout(() => plus.remove(), 700);
+    if (it.grumpy) {
+      score = Math.max(0, score - 15);
+      arena.classList.remove("shake"); void arena.offsetWidth; arena.classList.add("shake");
+    } else {
+      score += 10;
+    }
+    el.remove(); items = items.filter(i => i !== it);
+    updateMeter();
+    if (score >= 100) winGame();
+  });
+
+  function updateMeter() {
+    const pct = Math.min(score, 100);
+    document.getElementById("fill").style.width = pct + "%";
+    document.getElementById("meter-label").textContent =
+      pct >= 100 ? "100% forgiven 💯" : `${pct}% forgiven`;
+  }
+
+  function winGame() {
+    playing = false;
+    items.forEach(i => i.el.remove()); items = [];
+    const m = document.createElement("div");
+    m.className = "arena-msg";
+    m.innerHTML = '<div><div style="font-size:3rem">🏆</div>Meter full! You\'re the best.</div>';
+    arena.appendChild(m);
+    burst(25);
+    setTimeout(() => go("s-quiz"), 1600);
+  }
+
+  /* ---------- Level 2: quiz (every right answer is about him) ---------- */
+  const QUIZ = [
+    { q: "Who is the most handsome person in the world?",
+      opts: [["You 😎", 1], ["Also you", 1], ["Nobody else comes close", 1]],
+      yes: "Correct! Full marks 💯" },
+    { q: "How much do I love you?",
+      opts: [["A little", 0, "Wrong! Way more than that 😤"], ["A lot", 1], ["To infinity ♾️", 1]],
+      yes: "Even more than that, actually 🥹" },
+    { q: "Who is my favourite person?",
+      opts: [["Me, obviously 😌", 1], ["Your phone 📱", 0, "Haww, no! Try again 😂"], ["Food 🍕", 0, "Close… but no 😜"]],
+      yes: "Always you ❤️" },
+    { q: "Are you still mad at me?",
+      opts: [["Yes 😤", 0, "Wrong answer! Try again 😜"], ["A tiny bit 🤏", 0, "Not allowed. Try again 🥺"], ["No, I love you 🥰", 1]],
+      yes: "Yayyy! Now the final level…" }
+  ];
+  let qi = 0, locked = false;
+
+  function renderQ() {
+    const item = QUIZ[qi];
+    document.getElementById("q").textContent = item.q;
+    document.getElementById("feedback").textContent = "";
+    document.getElementById("qcount").textContent = `Question ${qi + 1} of ${QUIZ.length}`;
+    const box = document.getElementById("opts");
+    box.innerHTML = "";
+    locked = false;
+    item.opts.forEach(([label, ok, reply]) => {
+      const b = document.createElement("button");
+      b.className = "opt";
+      b.textContent = label;
+      b.onclick = () => {
+        if (locked) return;
+        const fb = document.getElementById("feedback");
+        if (ok) {
+          locked = true;
+          b.classList.add("right");
+          fb.textContent = item.yes;
+          burst(10);
+          setTimeout(() => { qi++; qi < QUIZ.length ? renderQ() : go("s-date"); }, 1200);
+        } else {
+          b.classList.remove("wrong"); void b.offsetWidth; b.classList.add("wrong");
+          fb.textContent = reply;
+        }
+      };
+      box.appendChild(b);
+    });
+  }
+
+  /* ---------- Level 3: the "No" button that runs away ---------- */
   const no = document.getElementById("no");
   const yes = document.getElementById("yes");
-  const noTexts = ["No", "Are you sure?", "Pakka? 🥺", "Think again!", "Pleaseee", "Nope, can't click me 😜", "Just say yes 💖"];
+  const noTexts = ["No", "Are you sure?", "Pakka? 🥺", "Think again!", "Pleaseee", "Nope, can't catch me 😜", "Just say yes 💖"];
   let tries = 0;
 
   function runAway(e) {
@@ -185,7 +425,7 @@
   no.addEventListener("touchstart", runAway, { passive: false });
   no.addEventListener("click", runAway);
 
-  // days: coming Saturday to Tuesday
+  /* ---------- Pick a day: coming Saturday to Tuesday ---------- */
   let chosen = null;
   function renderDays() {
     const box = document.getElementById("days");
@@ -211,16 +451,65 @@
   function confirmDay() {
     if (!chosen) {
       const box = document.getElementById("days");
-      box.animate([{ transform: "translateX(-6px)" }, { transform: "translateX(6px)" }, { transform: "none" }], { duration: 300 });
+      box.classList.remove("shake"); void box.offsetWidth; box.classList.add("shake");
       return;
     }
-    const when = chosen.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" });
-    document.getElementById("done-text").innerHTML = `See you on <b>${when}</b> 🗓️`;
-    go("s-done");
-    burst(60);
+    document.getElementById("when").textContent =
+      chosen.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" });
+    go("s-ticket");
   }
 
-  // effects
+  /* ---------- Scratch card ---------- */
+  function setupScratch() {
+    const c = document.getElementById("scratch");
+    const box = document.getElementById("ticket");
+    const dpr = window.devicePixelRatio || 1;
+    const w = box.clientWidth, h = box.clientHeight;
+    c.width = w * dpr; c.height = h * dpr;
+    const ctx = c.getContext("2d");
+    ctx.scale(dpr, dpr);
+    const g = ctx.createLinearGradient(0, 0, w, h);
+    g.addColorStop(0, "#ff8fab"); g.addColorStop(1, "#b794ff");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+    ctx.fillStyle = "rgba(255,255,255,.9)";
+    ctx.font = "700 20px Quicksand, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("✨ Scratch here ✨", w / 2, h / 2);
+    ctx.font = "26px sans-serif";
+    ["💖", "💕", "💗", "💞"].forEach((e, i) => ctx.fillText(e, 30 + i * (w - 60) / 3, 40));
+
+    let down = false, moves = 0, done = false;
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.lineWidth = 42; ctx.lineCap = "round"; ctx.lineJoin = "round";
+    let last = null;
+    const pos = e => { const r = c.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+
+    c.onpointerdown = e => { down = true; last = pos(e); c.setPointerCapture(e.pointerId); scratch(e); };
+    c.onpointermove = e => { if (down) scratch(e); };
+    c.onpointerup = c.onpointercancel = () => { down = false; last = null; };
+
+    function scratch(e) {
+      const p = pos(e);
+      ctx.beginPath(); ctx.moveTo(...last); ctx.lineTo(...p); ctx.stroke();
+      last = p;
+      if (++moves % 12 === 0 && !done && cleared() > 0.5) reveal();
+    }
+    function cleared() {
+      const data = ctx.getImageData(0, 0, c.width, c.height).data;
+      let clear = 0, n = 0;
+      for (let i = 3; i < data.length; i += 4 * 40) { n++; if (data[i] === 0) clear++; }
+      return clear / n;
+    }
+    function reveal() {
+      done = true;
+      c.style.transition = "opacity .5s"; c.style.opacity = 0;
+      setTimeout(() => c.remove(), 500);
+      document.getElementById("after").classList.add("show");
+      burst(70);
+    }
+  }
+
+  /* ---------- effects ---------- */
   function burst(n) {
     const icons = ["💖", "💕", "💗", "🌸", "✨", "🥰"];
     for (let i = 0; i < n; i++) {
