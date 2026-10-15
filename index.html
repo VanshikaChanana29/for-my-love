@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>I'm Sorry 🥺</title>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose: #e84a73;
+    --pink: #ff6f91;
+    --soft: #ffe0ea;
+    --lav: #a07bff;
+    --text: #5a3d4a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Quicksand', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    background: linear-gradient(160deg, #ffe3ec, #fff0f5 45%, #f3e8ff);
+    display: flex; align-items: center; justify-content: center;
+    padding: 24px 16px;
+    overflow-x: hidden;
+  }
+
+  .hearts { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+  .hearts span { position: absolute; bottom: -40px; animation: floatUp linear infinite; opacity: 0; }
+  @keyframes floatUp {
+    10% { opacity: .6; }
+    100% { transform: translateY(-110vh) rotate(25deg); opacity: 0; }
+  }
+
+  .card {
+    position: relative; z-index: 1;
+    width: 100%; max-width: 440px;
+    background: rgba(255,255,255,.88);
+    border: 2px solid var(--soft);
+    border-radius: 28px;
+    padding: 36px 24px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(232,74,115,.18);
+  }
+  .screen { display: none; }
+  .screen.active { display: block; animation: pop .5s ease; }
+  @keyframes pop { from { opacity: 0; transform: scale(.9) translateY(12px); } }
+
+  h1 { font-family: 'Pacifico', cursive; font-weight: 400; color: var(--rose); font-size: 2rem; margin: 6px 0 12px; }
+  p { line-height: 1.6; font-size: 1.05rem; }
+  .sub { opacity: .85; margin-bottom: 22px; min-height: 3.2em; }
+
+  .face { font-size: 4.2rem; display: inline-block; }
+  .sad   { animation: sway 2.2s ease-in-out infinite; }
+  .happy { animation: bounce 1s ease-in-out infinite; }
+  @keyframes sway { 0%,100% { transform: rotate(-8deg); } 50% { transform: rotate(8deg); } }
+  @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+
+  .btns { display: flex; justify-content: center; align-items: center; gap: 14px; flex-wrap: wrap; min-height: 70px; }
+  .btn {
+    font-family: inherit; font-weight: 700; font-size: 1rem;
+    border: none; border-radius: 999px; cursor: pointer;
+    padding: 13px 28px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--pink), var(--rose));
+    box-shadow: 0 8px 18px rgba(232,74,115,.3);
+    transition: transform .2s;
+  }
+  .btn:hover { transform: scale(1.06); }
+  .btn.no {
+    background: #fff; color: var(--rose); border: 2px solid var(--soft); box-shadow: none;
+    transition: left .25s ease, top .25s ease, transform .2s;
+  }
+  .btn.no.running { position: fixed; z-index: 10; }
+
+  .days { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 22px; }
+  .day {
+    font-family: inherit; color: var(--text);
+    border: 2px solid var(--soft); background: #fffaf6; border-radius: 18px;
+    padding: 14px 8px; cursor: pointer; transition: transform .15s, border-color .15s;
+    opacity: 0; animation: dayIn .4s ease forwards;
+  }
+  @keyframes dayIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  .day b { display: block; font-size: 1.05rem; }
+  .day small { opacity: .7; }
+  .day:hover { transform: translateY(-3px); border-color: var(--pink); }
+  .day.sel { border-color: var(--rose); background: #fff0f5; transform: scale(1.05); }
+
+  .note { background: #fff7fa; border: 2px dashed #ffc2d1; border-radius: 20px; padding: 18px; font-weight: 700; margin-top: 18px; }
+
+  .confetti { position: fixed; top: -30px; z-index: 20; pointer-events: none; font-size: 22px; animation: fall linear forwards; }
+  @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+  }
+</style>
+</head>
+<body>
+<div class="hearts" id="hearts"></div>
+
+<main class="card">
+
+  <!-- 1. Sorry -->
+  <section class="screen active" id="s-sorry">
+    <div class="face sad">🥺</div>
+    <h1>I'm sorry</h1>
+    <p class="sub" id="type"></p>
+    <div class="btns">
+      <button class="btn" onclick="go('s-date')">Okay, I forgive you 🤍</button>
+    </div>
+  </section>
+
+  <!-- 2. Date ask -->
+  <section class="screen" id="s-date">
+    <div class="face sad">🐻💐</div>
+    <h1>Date pe chaloge?</h1>
+    <p class="sub">Let me make it up to you. Just you and me 🥹</p>
+    <div class="btns">
+      <button class="btn" id="yes" onclick="go('s-day')">Yes 💖</button>
+      <button class="btn no" id="no">No</button>
+    </div>
+  </section>
+
+  <!-- 3. Pick a day -->
+  <section class="screen" id="s-day">
+    <div class="face happy">🥰</div>
+    <h1>Yayyy!</h1>
+    <p class="sub">Which day works for you?</p>
+    <div class="days" id="days"></div>
+    <button class="btn" onclick="confirmDay()">It's a date 💌</button>
+  </section>
+
+  <!-- 4. Done -->
+  <section class="screen" id="s-done">
+    <div class="face happy">💞</div>
+    <h1>It's a date!</h1>
+    <p id="done-text"></p>
+    <div class="note">Can't wait to see you. Screenshot this and send it to me 😌</div>
+  </section>
+
+</main>
+
+<script>
+  function go(id) {
+    document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+    resetNo();
+    if (id === "s-day") renderDays();
+  }
+
+  // typewriter sorry message
+  const msg = "I know I messed up, and I hate that I upset you. You mean the world to me. Please don't stay mad for long? 🫶🏻";
+  let t = 0;
+  (function type() {
+    document.getElementById("type").textContent = msg.slice(0, t++);
+    if (t <= msg.length) setTimeout(type, 40);
+  })();
+
+  // the "No" button that runs away
+  const no = document.getElementById("no");
+  const yes = document.getElementById("yes");
+  const noTexts = ["No", "Are you sure?", "Pakka? 🥺", "Think again!", "Pleaseee", "Nope, can't click me 😜", "Just say yes 💖"];
+  let tries = 0;
+
+  function runAway(e) {
+    if (e) e.preventDefault();
+    tries++;
+    no.textContent = noTexts[Math.min(tries, noTexts.length - 1)];
+    no.classList.add("running");
+    const pad = 16;
+    const maxX = window.innerWidth - no.offsetWidth - pad;
+    const maxY = window.innerHeight - no.offsetHeight - pad;
+    no.style.left = pad + Math.random() * Math.max(0, maxX - pad) + "px";
+    no.style.top = pad + Math.random() * Math.max(0, maxY - pad) + "px";
+    yes.style.transform = `scale(${Math.min(1 + tries * 0.12, 1.8)})`;
+  }
+  function resetNo() {
+    tries = 0;
+    no.textContent = "No";
+    no.classList.remove("running");
+    no.style.left = no.style.top = "";
+    yes.style.transform = "";
+  }
+  no.addEventListener("mouseenter", runAway);
+  no.addEventListener("touchstart", runAway, { passive: false });
+  no.addEventListener("click", runAway);
+
+  // days: coming Saturday to Tuesday
+  let chosen = null;
+  function renderDays() {
+    const box = document.getElementById("days");
+    box.innerHTML = "";
+    chosen = null;
+    const today = new Date();
+    const sat = new Date(today.getFullYear(), today.getMonth(), today.getDate() + (6 - today.getDay() + 7) % 7);
+    for (let i = 0; i < 4; i++) {
+      const d = new Date(sat.getFullYear(), sat.getMonth(), sat.getDate() + i);
+      const b = document.createElement("button");
+      b.className = "day";
+      b.style.animationDelay = i * 0.1 + "s";
+      b.innerHTML = `<b>${d.toLocaleDateString("en-IN", { weekday: "long" })}</b><small>${d.toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</small>`;
+      b.onclick = () => {
+        box.querySelectorAll(".day").forEach(x => x.classList.remove("sel"));
+        b.classList.add("sel");
+        chosen = d;
+      };
+      box.appendChild(b);
+    }
+  }
+
+  function confirmDay() {
+    if (!chosen) {
+      const box = document.getElementById("days");
+      box.animate([{ transform: "translateX(-6px)" }, { transform: "translateX(6px)" }, { transform: "none" }], { duration: 300 });
+      return;
+    }
+    const when = chosen.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long" });
+    document.getElementById("done-text").innerHTML = `See you on <b>${when}</b> 🗓️`;
+    go("s-done");
+    burst(60);
+  }
+
+  // effects
+  function burst(n) {
+    const icons = ["💖", "💕", "💗", "🌸", "✨", "🥰"];
+    for (let i = 0; i < n; i++) {
+      const s = document.createElement("span");
+      s.className = "confetti";
+      s.textContent = icons[i % icons.length];
+      s.style.left = Math.random() * 100 + "vw";
+      s.style.animationDuration = 2 + Math.random() * 2.5 + "s";
+      s.style.animationDelay = Math.random() * .6 + "s";
+      document.body.appendChild(s);
+      setTimeout(() => s.remove(), 5500);
+    }
+  }
+
+  (function floatingHearts() {
+    const box = document.getElementById("hearts");
+    const icons = ["❤️", "💕", "💗", "🤍", "💞"];
+    for (let i = 0; i < 16; i++) {
+      const s = document.createElement("span");
+      s.textContent = icons[i % icons.length];
+      s.style.left = Math.random() * 100 + "%";
+      s.style.fontSize = 14 + Math.random() * 18 + "px";
+      s.style.animationDuration = 9 + Math.random() * 10 + "s";
+      s.style.animationDelay = Math.random() * 10 + "s";
+      box.appendChild(s);
+    }
+  })();
+</script>
+</body>
+</html>
